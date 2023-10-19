@@ -86,7 +86,7 @@ static struct luaItem_string luaCELimit = {
 static struct luaItem_selection luaDomain = {
     {"Domain (TX)", CRSF_TEXT_SELECTION},
     0, // value
-    "755-805MHz;755-855MHz;825-925MHz;900-925MHz;FCC915;900-950MHz;950-990MHz;990-1020MHz",
+    "755-955MHz;755-805MHz;755-855MHz;825-925MHz;900-925MHz;FCC915;900-950MHz;950-990MHz;990-1020MHz",
     STR_EMPTYSPACE
 };
 

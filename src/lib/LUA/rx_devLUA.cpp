@@ -10,10 +10,25 @@ extern void reconfigureSerial();
 extern bool InLoanBindingMode;
 extern bool returnModelFromLoan;
 
+#if defined(PLATFORM_ESP32) || defined(PLATFORM_ESP8266)
+extern unsigned long rebootTime;
+extern void setWifiUpdateMode();
+#endif
+#ifdef PLATFORM_STM32
+extern unsigned long rebootTime;
+#endif
+
 static char modelString[] = "000";
 static const char *pwmModes = "50Hz;60Hz;100Hz;160Hz;333Hz;400Hz;10kHzDuty;On/Off";
 static const char *txModes = "50Hz;60Hz;100Hz;160Hz;333Hz;400Hz;10kHzDuty;On/Off;Serial TX";
 static const char *rxModes = "50Hz;60Hz;100Hz;160Hz;333Hz;400Hz;10kHzDuty;On/Off;Serial RX";
+
+static struct luaItem_selection luaDomain = {
+    {"Domain (RX)", CRSF_TEXT_SELECTION},
+    0, // value
+    "755-955MHz;755-805MHz;755-855MHz;825-925MHz;900-925MHz;FCC915;900-950MHz;950-990MHz;990-1020MHz",
+    STR_EMPTYSPACE
+};
 
 static struct luaItem_selection luaSerialProtocol = {
     {"Protocol", CRSF_TEXT_SELECTION},
@@ -318,6 +333,20 @@ static void registerLuaParameters()
     });
   }
 
+      // Domain
+    registerLUAParameter(&luaDomain, [](struct luaPropertiesCommon *item, uint8_t arg)
+    {
+#if defined(PLATFORM_ESP8266) || defined(PLATFORM_ESP32)
+      firmwareOptions.domain = arg;
+      saveOptions();
+      rebootTime = millis() + 400;
+#else
+     config.SetDomain(arg);
+     rebootTime = millis() + 400;
+#endif      
+    }
+    );
+
 #if defined(POWER_OUTPUT_VALUES)
   luadevGeneratePowerOpts(&luaTlmPower);
   registerLUAParameter(&luaTlmPower, [](struct luaPropertiesCommon* item, uint8_t arg){
@@ -376,6 +405,12 @@ static int event()
   {
     setLuaTextSelectionValue(&luaDiversityMode, config.GetAntennaMode()); // Reusing SetAntennaMode since both GPIO_PIN_ANTENNA_SELECT and GPIO_PIN_NSS_2 will not be defined together.
   }
+
+  #if defined(PLATFORM_ESP8266) || defined(PLATFORM_ESP32)
+    setLuaTextSelectionValue(&luaDomain, firmwareOptions.domain);
+#else
+    setLuaTextSelectionValue(&luaDomain, (uint8_t)config.GetDomain());
+#endif
 
 #if defined(POWER_OUTPUT_VALUES)
   setLuaTextSelectionValue(&luaTlmPower, config.GetPower() - MinPower);

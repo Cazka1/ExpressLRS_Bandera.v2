@@ -1111,6 +1111,18 @@ void MspReceiveComplete()
 {
     switch (MspData[0])
     {
+    case MSP_ELRS_SET_RX_DOMAIIN_MODE:
+    {
+#if defined(PLATFORM_ESP8266) || defined(PLATFORM_ESP32)
+      firmwareOptions.domain = MspData[1];
+      saveOptions();
+      rebootTime = millis() + 400;
+#else
+     config.SetDomain(MspData[1]);
+     rebootTime = millis() + 400;
+#endif   
+    }
+    break;    
     case MSP_ELRS_SET_RX_WIFI_MODE: //0x0E
 #if defined(PLATFORM_ESP32) || defined(PLATFORM_ESP8266)
         // The MSP packet needs to be ACKed so the TX doesn't

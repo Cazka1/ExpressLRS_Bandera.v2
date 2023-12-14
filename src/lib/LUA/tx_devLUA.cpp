@@ -83,10 +83,11 @@ static struct luaItem_string luaCELimit = {
 };
 #endif
 
-static struct luaItem_selection luaDomain = {
-    {"Domain (TX)", CRSF_TEXT_SELECTION},
+#define DOMAIN_STRING "755-955MHz;755-805MHz;755-855MHz;825-925MHz;900-925MHz;FCC915;900-950MHz;950-990MHz;990-1020MHz"
+static struct luaItem_selection luaDomainSync = {
+    {"Domain SYNC", CRSF_TEXT_SELECTION},
     0, // value
-    "755-955MHz;755-805MHz;755-855MHz;825-925MHz;900-925MHz;FCC915;900-950MHz;950-990MHz;990-1020MHz",
+    DOMAIN_STRING,
     STR_EMPTYSPACE
 };
 
@@ -280,6 +281,8 @@ extern void SetSyncSpam();
 extern void EnterBindingMode();
 extern bool InBindingMode;
 extern bool RxWiFiReadyToSend;
+extern bool RxSetDomainReadyToSend;
+extern uint8_t RxSetDomain;
 #if defined(USE_TX_BACKPACK)
 extern bool TxBackpackWiFiReadyToSend;
 extern bool VRxBackpackWiFiReadyToSend;
@@ -643,17 +646,20 @@ static void registerLuaParameters()
       });
     }
 
-    // Domain
-    registerLUAParameter(&luaDomain, [](struct luaPropertiesCommon *item, uint8_t arg)
+    // DomainSync with RX
+    registerLUAParameter(&luaDomainSync, [](struct luaPropertiesCommon *item, uint8_t arg)
     {
+      // save config, send to RX via MSP and reboot TX after 2sec
+      RxSetDomainReadyToSend = true;
+      RxSetDomain = arg;
 #if defined(PLATFORM_ESP8266) || defined(PLATFORM_ESP32)
       firmwareOptions.domain = arg;
       saveOptions();
-      rebootTime = millis() + 400;
+      rebootTime = millis() + 2000;
 #else
      config.SetDomain(arg);
-     rebootTime = millis() + 400;
-#endif      
+     rebootTime = millis() + 2000;
+#endif    
     }
     );
 
@@ -802,9 +808,9 @@ static int event()
   setLuaTextSelectionValue(&luaPower, config.GetPower() - MinPower);
 
 #if defined(PLATFORM_ESP8266) || defined(PLATFORM_ESP32)
-    setLuaTextSelectionValue(&luaDomain, firmwareOptions.domain);
+    setLuaTextSelectionValue(&luaDomainSync, firmwareOptions.domain);
 #else
-    setLuaTextSelectionValue(&luaDomain, (uint8_t)config.GetDomain());
+    setLuaTextSelectionValue(&luaDomainSync, (uint8_t)config.GetDomain());
 #endif
   
   if (GPIO_PIN_FAN_EN != UNDEF_PIN || GPIO_PIN_FAN_PWM != UNDEF_PIN)

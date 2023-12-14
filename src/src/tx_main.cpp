@@ -70,6 +70,8 @@ bool InBindingMode = false;
 uint8_t MSPDataPackage[5];
 static uint8_t BindingSendCount;
 bool RxWiFiReadyToSend = false;
+bool RxSetDomainReadyToSend;
+uint8_t RxSetDomain;
 
 static uint16_t ptrChannelData[3] = {CRSF_CHANNEL_VALUE_MID, CRSF_CHANNEL_VALUE_MID, CRSF_CHANNEL_VALUE_MID};
 bool headTrackingEnabled = false;
@@ -857,6 +859,13 @@ void SetSyncSpam()
   }
 }
 
+static void SendRxDomainOverMSP(uint8_t rx_domain)
+{
+  MSPDataPackage[0] = MSP_ELRS_SET_RX_DOMAIIN_MODE;
+  MSPDataPackage[1] = rx_domain;
+  MspSender.SetDataToTransmit(MSPDataPackage, 2);
+}
+
 static void SendRxWiFiOverMSP()
 {
   MSPDataPackage[0] = MSP_ELRS_SET_RX_WIFI_MODE;
@@ -878,6 +887,12 @@ static void CheckReadyToSend()
     {
       SendRxWiFiOverMSP();
     }
+  }
+
+  if (RxSetDomainReadyToSend)
+  {
+    RxSetDomainReadyToSend = false;
+    SendRxDomainOverMSP(RxSetDomain);
   }
 }
 

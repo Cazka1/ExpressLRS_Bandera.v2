@@ -408,5 +408,5 @@ bool options_init()
 
     return hasHardware;
 }
-
+шось поміняв
 #endif

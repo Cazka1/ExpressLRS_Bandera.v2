@@ -83,7 +83,7 @@ static struct luaItem_string luaCELimit = {
 };
 #endif
 
-#define DOMAIN_STRING "600-620MHz;755-955MHz;755-805MHz;755-855MHz;825-925MHz;900-925MHz;FCC915;900-950MHz;950-990MHz;990-1020MHz"
+#define DOMAIN_STRING "755-955MHz;755-805MHz;755-855MHz;825-925MHz;900-925MHz;FCC915;900-950MHz;950-990MHz;990-1020MHz;600-620MHz"
 static struct luaItem_selection luaDomainSync = {
     {"Domain SYNC", CRSF_TEXT_SELECTION},
     0, // value

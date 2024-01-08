@@ -23,7 +23,7 @@ static const char *pwmModes = "50Hz;60Hz;100Hz;160Hz;333Hz;400Hz;10kHzDuty;On/Of
 static const char *txModes = "50Hz;60Hz;100Hz;160Hz;333Hz;400Hz;10kHzDuty;On/Off;Serial TX";
 static const char *rxModes = "50Hz;60Hz;100Hz;160Hz;333Hz;400Hz;10kHzDuty;On/Off;Serial RX";
 
-#define DOMAIN_STRING "600-620MHz;755-955MHz;755-805MHz;755-855MHz;825-925MHz;900-925MHz;FCC915;900-950MHz;950-990MHz;990-1020MHz"
+#define DOMAIN_STRING "755-955MHz;755-805MHz;755-855MHz;825-925MHz;900-925MHz;FCC915;900-950MHz;950-990MHz;990-1020MHz;600-620MHz"
 static struct luaItem_selection luaDomain = {
     {"Domain (RX)", CRSF_TEXT_SELECTION},
     0, // value

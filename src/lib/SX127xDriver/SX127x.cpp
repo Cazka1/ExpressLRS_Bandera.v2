@@ -114,7 +114,7 @@ void SX127xDriver::ConfigLoraDefaults()
   hal.writeRegister(SX127X_REG_FIFO_RX_BASE_ADDR, SX127X_FIFO_RX_BASE_ADDR_MAX, SX12XX_Radio_All);
   hal.writeRegisterBits(SX127X_REG_DIO_MAPPING_1, SX127X_DIO0_RXTX_DONE, SX127X_DIO0_MASK, SX12XX_Radio_All); //undocumented "hack", looking at Table 18 from datasheet SX127X_REG_DIO_MAPPING_1 = 11 appears to be unspported by infact it generates an intterupt on both RXdone and TXdone, this saves switching modes.
   hal.writeRegister(SX127X_REG_LNA, SX127X_LNA_BOOST_ON, SX12XX_Radio_All); // set max LNA gain & boost
-  hal.writeRegister(SX1278_REG_MODEM_CONFIG_3, SX1278_AGC_AUTO_ON | SX1278_LOW_DATA_RATE_OPT_OFF, SX12XX_Radio_All); // off AGC 
+  hal.writeRegister(SX1278_REG_MODEM_CONFIG_3, SX1278_AGC_AUTO_ON | SX1278_LOW_DATA_RATE_OPT_OFF, SX12XX_Radio_All); // on AGC
   hal.writeRegisterBits(SX127X_REG_OCP, SX127X_OCP_ON | SX127X_OCP_TRIM_240_MA, SX127X_OCP_MASK, SX12XX_Radio_All); //150ma max current
   SetPreambleLength(SX127X_PREAMBLE_LENGTH_LSB);
 }
@@ -225,7 +225,7 @@ void SX127xDriver::SetOutputPower(uint8_t Power)
 {
   uint8_t paConfig = 0;
   uint8_t paDac = 0;
-  
+
   if (OPT_USE_SX1276_RFO_HF)
   {
     if( Power < -1 )
@@ -298,7 +298,7 @@ void ICACHE_RAM_ATTR SX127xDriver::CommitOutputPower()
   if (pwrPending == PWRPENDING_NONE)
     return;
 
-  uint8_t paDac = hal.readRegister(REG_PADAC, SX12XX_Radio_All);  
+  uint8_t paDac = hal.readRegister(REG_PADAC, SX12XX_Radio_All);
   if( pwrPending > 17 )
   {
     paDac = ( paDac & SX127X_PADAC_20DBM_MASK ) | SX127X_PADAC_20DBM_ON;
@@ -455,7 +455,7 @@ void ICACHE_RAM_ATTR SX127xDriver::TXnb(uint8_t * data, uint8_t size, SX12XX_Rad
   // }
 
   transmittingRadio = radioNumber;
-  
+
   SetMode(SX127x_OPMODE_STANDBY, SX12XX_Radio_All);
 
   if (radioNumber == SX12XX_Radio_NONE)

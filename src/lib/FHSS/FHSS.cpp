@@ -17,6 +17,7 @@ const fhss_config_t domains[] = {
 #endif
 const fhss_config_t domains[] = {
     {"755-955", FREQ_HZ_TO_REG_VAL(755000000), FREQ_HZ_TO_REG_VAL(955000000), 200},
+    {"600-620", FREQ_HZ_TO_REG_VAL(600000000), FREQ_HZ_TO_REG_VAL(620000000), 100},
     {"755-805",  FREQ_HZ_TO_REG_VAL(755000000), FREQ_HZ_TO_REG_VAL(805000000), 100},
     {"755-855", FREQ_HZ_TO_REG_VAL(755000000), FREQ_HZ_TO_REG_VAL(855000000), 200},
     {"825-925",  FREQ_HZ_TO_REG_VAL(825000000), FREQ_HZ_TO_REG_VAL(925000000), 200},
@@ -30,7 +31,7 @@ const fhss_config_t domains[] = {
 #include "SX1280Driver.h"
 
 const fhss_config_t domains[] = {
-    {    
+    {
     #if defined(Regulatory_Domain_EU_CE_2400)
         "CE_LBT",
     #elif defined(Regulatory_Domain_ISM_2400)

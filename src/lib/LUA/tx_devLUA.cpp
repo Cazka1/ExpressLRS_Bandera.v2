@@ -83,7 +83,7 @@ static struct luaItem_string luaCELimit = {
 };
 #endif
 
-#define DOMAIN_STRING "755-955MHz;755-805MHz;755-855MHz;825-925MHz;900-925MHz;FCC915;900-950MHz;950-990MHz;990-1020MHz"
+#define DOMAIN_STRING "600-620MHz;755-955MHz;755-805MHz;755-855MHz;825-925MHz;900-925MHz;FCC915;900-950MHz;950-990MHz;990-1020MHz"
 static struct luaItem_selection luaDomainSync = {
     {"Domain SYNC", CRSF_TEXT_SELECTION},
     0, // value
@@ -659,7 +659,7 @@ static void registerLuaParameters()
 #else
      config.SetDomain(arg);
      rebootTime = millis() + 2000;
-#endif    
+#endif
     }
     );
 
@@ -812,7 +812,7 @@ static int event()
 #else
     setLuaTextSelectionValue(&luaDomainSync, (uint8_t)config.GetDomain());
 #endif
-  
+
   if (GPIO_PIN_FAN_EN != UNDEF_PIN || GPIO_PIN_FAN_PWM != UNDEF_PIN)
   {
     setLuaTextSelectionValue(&luaFanThreshold, config.GetPowerFanThreshold());
